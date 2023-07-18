@@ -8,8 +8,12 @@ def substract(c,d):
 def multiply(a,b):
     total=a*b
     return total
+def divide(a,b):
+    total=a/b
+    return total
 a = add(2,3)
 s=substract(10,6)
 m=multiply(6,4)
-total=m*a-s
+d=divide(6,3)
+total=d+m*a-s
 print("Total:", total)
