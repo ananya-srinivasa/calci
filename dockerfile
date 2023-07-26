@@ -1,12 +1,17 @@
-# Basic nginx dockerfile starting with Linux
-FROM nginx:latest
+# Basic nginx dockerfile starting with Windows Server Core
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
+
+# Download and install Nginx
+RUN powershell -Command Invoke-WebRequest -Uri 'https://nginx.org/download/nginx-1.21.1.zip' -OutFile 'C:\nginx.zip' ; \
+    Expand-Archive -Path 'C:\nginx.zip' -DestinationPath 'C:\' ; \
+    Remove-Item 'C:\nginx.zip' -Force
+
+# Set environment variables
+ENV NGINX_HOME "C:\nginx-1.21.1"
+ENV NGINX_CONF_PATH "%NGINX_HOME%\conf\nginx.conf"
 
 # Expose port 80 for Nginx
 EXPOSE 80
 
-# Optionally, you can copy your custom nginx configuration file into the container
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-# The default CMD in the nginx:latest image already starts Nginx automatically
-# If you need to customize it further, you can provide your own CMD instruction here
-# CMD ["nginx", "-g", "daemon off;"]
+# Start Nginx service when the container runs
+CMD ["cmd", "/C", "%NGINX_HOME%\\nginx.exe", "-g", "daemon off;"]
