@@ -1,17 +1,15 @@
-# Basic nginx dockerfile starting with Windows Server Core
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
+# Use the official Python image as the base image
+FROM python:3.9
 
-# Download and install Nginx
-RUN powershell -Command Invoke-WebRequest -Uri 'https://nginx.org/download/nginx-1.21.1.zip' -OutFile 'C:\nginx.zip' ; \
-    Expand-Archive -Path 'C:\nginx.zip' -DestinationPath 'C:\' ; \
-    Remove-Item 'C:\nginx.zip' -Force
+# Set the working directory inside the container
+WORKDIR /app
 
-# Set environment variables
-ENV NGINX_HOME "C:\nginx-1.21.1"
-ENV NGINX_CONF_PATH "%NGINX_HOME%\conf\nginx.conf"
+# Copy the requirements.txt file and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 80 for Nginx
-EXPOSE 80
+# Copy the rest of the application files into the container
+COPY . .
 
-# Start Nginx service when the container runs
-CMD ["cmd", "/C", "%NGINX_HOME%\\nginx.exe", "-g", "daemon off;"]
+# Set the default command to run the Python script
+CMD ["python", "your_script.py"]
